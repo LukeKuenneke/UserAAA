@@ -1,0 +1,26 @@
+gateway:
+  service:
+    # Altamira's DNS points to this
+    loadBalancerIP: 10.103.15.117
+    # Needed to change targetPort under http to 8080 because unprivileged access won't allow binding to 80
+    # Updating to kernel newer than 3.10 may avoid this due to using 
+    # Ref: https://stackoverflow.com/questions/68014640/istio-no-listener-registered-when-ports-are-the-same
+    # Ref: https://discuss.istio.io/t/making-ingress-gateway-service-listen-only-on-port-443/9296
+    ports:
+    - name: http2
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+
+  labels:
+    # Defaults to using the release name. 'ingressgateway' is the default name for many examples though.
+    istio: ingressgateway
+
+  # Required to run as non-root. A linux kernel newer than 3.10 might not require this.
+  # Pulled these specific values from the old IstioOperator install method.
+  # Ref: https://github.com/istio/istio/issues/36560
+  securityContext:
+    fsGroup: 1337
+    runAsGroup: 1337
+    runAsNonRoot: true
+    runAsUser: 1337

@@ -1,0 +1,35 @@
+USER-SUPPLIED VALUES:
+auth:
+  adminPassword: admin
+  adminUser: admin
+  tls:
+    enabled: true
+    existingSecret: ssl-cert-alt3
+    keystorePassword: keystorePassword
+    truststorePassword: keystorePassword
+    usePem: true
+diagnosticMode:
+  args:
+  - infinity
+  command:
+  - sleep
+  enabled: false
+extraStartupArgs: --log-level=info --https-client-auth=required
+extraVolumeMounts:
+- mountPath: /bitnami/keycloak/configuration/standalone-ha.xml
+  name: standalone-volume
+  subPath: standalone-ha.xml
+extraVolumes:
+- configMap:
+    name: standalone
+  name: standalone-volume
+global:
+  storageClass: nfs-csi
+postgresql:
+  architecture: standalone
+  auth:
+    database: bitnami_keycloak
+    password: keycloak_postgres_access
+    username: bn_keycloak
+  enabled: true
+replicaCount: 1
